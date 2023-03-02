@@ -647,6 +647,32 @@ RCT_EXPORT_METHOD(getPhotoByInternalID:(NSString *)internalId
   }, false);
 }
 
+
+RCT_EXPORT_METHOD(updateAlbumName:(NSString *)albumName
+                  withAlbumIdentifier:(NSString *)oldAlbumName
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject)
+{
+  PHPhotoLibrary *photoLibrary = [PHPhotoLibrary sharedPhotoLibrary];
+  // Find the album with the given identifier
+     PHFetchOptions *options = [[PHFetchOptions alloc] init];
+     options.predicate = [NSPredicate predicateWithFormat:@"localizedTitle == %@", oldAlbumName];
+     PHAssetCollection *album = [PHAssetCollection fetchAssetCollectionsWithType:PHAssetCollectionTypeAlbum subtype:PHAssetCollectionSubtypeAny options:options].firstObject;
+     
+     // Update the album name
+     [photoLibrary performChanges:^{
+         PHAssetCollectionChangeRequest *request = [PHAssetCollectionChangeRequest changeRequestForAssetCollection:album];
+         request.title = albumName;
+     } completionHandler:^(BOOL success, NSError *error) {
+         if (success) {
+             resolve(@"Album name updated successfully");
+         } else {
+             reject(@"error", @"Failed to update album name", error);
+         }
+     }];
+  
+}
+
 static void checkPhotoLibraryConfig()
 {
 #if RCT_DEV

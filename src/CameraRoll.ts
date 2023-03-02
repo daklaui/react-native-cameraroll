@@ -243,4 +243,14 @@ export class CameraRoll {
     };
     return RNCCameraRoll.getPhotoByInternalID(internalID, conversionOption);
   }
+
+
+  /**
+ * On iOS: requests update album title  from the camera roll.
+ * @param newAlbumName - new title of the album.
+ * @param oldAlbumName - old title of the album.
+ */
+  static updateAlbumName(newAlbumName: string, oldAlbumName: string): void {
+    return RNCCameraRoll.updateAlbumName(newAlbumName, oldAlbumName);
+  }
 }
